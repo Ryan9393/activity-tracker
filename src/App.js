@@ -51,7 +51,7 @@ function App() {
     <div className="container">
         <h1 className = 'title'>Task Tracker</h1>
         {
-          tasks.length === 0 ? '': <h1 className='total-tasks'>Number of tasks: {tasks.filter(task => !task.complete).length}</h1>
+          tasks.length === 0 ? <h1>No Tasks</h1>: <h1 className='total-tasks'>Number of tasks: {tasks.filter(task => !task.complete).length}</h1>
         }
 
         <input className='input-field' ref = {taskRef} placeholder = 'Add Task...'/>
@@ -59,7 +59,8 @@ function App() {
         <Button onClick={removeTasks} text = "Remove Task"/>
         <Button onClick={removeAllTasks} text = "Remove All Tasks"/>
 
-        { tasks.length > 0 ?<TaskList tasks = {tasks} toggleTask = {toggleTask}/> : 'No Tasks to show'}
+        <TaskList tasks = {tasks} toggleTask = {toggleTask}/>
+
     </div>
   );
 }
