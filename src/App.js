@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useRef} from 'react'
+import { useState, useRef, useEffect} from 'react'
 import TaskList from './Components/TaskList'
 import Button from './Components/Button'
 
@@ -47,6 +47,13 @@ function App() {
     setTasks([])
   }
 
+  useEffect(()=>{
+    fetch('http://localhost:8020/users')
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  }, [])
+
   return (
     <div className="container">
         <h1 className = 'title'>Task Tracker</h1>
@@ -61,7 +68,10 @@ function App() {
 
         <TaskList tasks = {tasks} toggleTask = {toggleTask}/>
 
+
+
     </div>
+
   );
 }
 
