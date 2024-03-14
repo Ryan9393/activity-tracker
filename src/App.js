@@ -16,6 +16,16 @@ function App() {
     //if user input no task name alert
     if(taskName === '') return alert('Please Add a Task')
 
+    //Post request to api
+    const taskObj = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({taskName})
+    }
+    fetch('http://localhost:8020/tasks', taskObj)
+      .then(res => res.json)
+      .catch(err => console.log(err))
+
     //append new task to task list
     setTasks(PrevTasks => {
       return [...tasks, {id:id, name:taskName, complete:false}]
@@ -48,7 +58,7 @@ function App() {
   }
 
   useEffect(()=>{
-    fetch('http://localhost:8020/users')
+    fetch('http://localhost:8020/tasks')
     .then(res => res.json())
     .then(data => console.log(data))
     .catch(err => console.log(err))
