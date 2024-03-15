@@ -9,15 +9,31 @@ function App() {
   const [tasks, setTasks] = useState([])
   const taskRef = useRef()
 
+  //Collect tasks from api
+  useEffect(()=>{
+    fetch('http://localhost:8020/tasks')
+    .then(res => res.json())
+    .then(function (data){
+      //append complete status to tasks
+      data.forEach((task) => task.complete = false)
+      //add to task list
+      setTasks(data)
+
+    })
+    .catch(err => console.log(err))
+
+  }, [])
+
   function addTasks(){
     let taskName = taskRef.current.value 
     //create random task id (can repeat probably not best)
-    let id = Math.floor(Math.random()*10000)
+    // let id = Math.floor(Math.random()*10000)
+
     //if user input no task name alert
     if(taskName === '') return alert('Please Add a Task')
 
-    //Post request to api
-    const taskObj = {
+    //add new task to database
+    const taskObj= {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({taskName})
@@ -26,10 +42,15 @@ function App() {
       .then(res => res.json)
       .catch(err => console.log(err))
 
-    //append new task to task list
-    setTasks(PrevTasks => {
-      return [...tasks, {id:id, name:taskName, complete:false}]
-    })
+    //retrive auto-increment id of new task
+    fetch('http://localhost:8020/taskID', taskObj)
+      .then(res => res.json())
+      .then(data =>
+        //append new task to task list
+        setTasks(PrevTasks => {
+        return [...tasks, {id:data[0].id, name:taskName, complete:false}]
+      })) 
+      .catch(err => console.log(err))
 
     //resent user input to empty
     taskRef.current.value = null
@@ -54,15 +75,16 @@ function App() {
 
   //set task list to empty array
   function removeAllTasks(){
+    const taskObj= {
+      method: 'POST',
+    }
+    fetch('http://localhost:8020/deleteTasks',taskObj)
+    .then(res => res.json)
+    .catch(err => console.log(err))
+
     setTasks([])
   }
 
-  useEffect(()=>{
-    fetch('http://localhost:8020/tasks')
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.log(err))
-  }, [])
 
   return (
     <div className="container">

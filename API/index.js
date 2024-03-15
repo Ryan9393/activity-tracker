@@ -38,6 +38,27 @@ app.post('/tasks', (req, res) =>{
 
 })
 
+//get the auto increment task id from database
+//bad practice
+app.post('/taskID', (req, res) => {
+    const name = req.body.taskName
+    const sql = "SELECT id FROM tasks WHERE name = '" + name + "';"
+    db.query(sql, (err , data) =>{
+        if(err) return res.json(err)
+        return res.json(data)
+    })
+})
+
+//remove all tasks from task list
+app.post('/deleteTasks', (req, res) => {
+    //work around since DELETE without conditional always fails
+    const sql = "DELETE FROM tasks WHERE id > 1;"
+    db.query(sql, (err , data) =>{
+        if(err) return res.json(err)
+        return res.json(data)
+    })
+})
+
 app.listen(8020, () =>{
     console.log("Listening")
 })
