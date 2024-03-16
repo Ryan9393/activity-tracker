@@ -49,10 +49,21 @@ app.post('/taskID', (req, res) => {
     })
 })
 
+//remove specific from task list
+app.post('/deleteTask', (req, res) => {
+    const name = req.body.taskName
+    const sql = "DELETE FROM tasks WHERE name = '" + name + "';"
+    db.query(sql, (err , data) =>{
+        if(err) return res.json(err)
+        return res.json(data)
+    })
+})
+
+
 //remove all tasks from task list
 app.post('/deleteTasks', (req, res) => {
     //work around since DELETE without conditional always fails
-    const sql = "DELETE FROM tasks WHERE id > 1;"
+    const sql = "DELETE FROM tasks WHERE id > 0;"
     db.query(sql, (err , data) =>{
         if(err) return res.json(err)
         return res.json(data)

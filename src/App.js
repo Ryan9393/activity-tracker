@@ -68,9 +68,23 @@ function App() {
 
   //remove completed tasks
   function removeTasks(){
-    //filter for tasks with complete = false
-    const newTasks = tasks.filter(task => !task.complete)
-    setTasks(newTasks)
+    //split into two arrays one of tasks to keep and one to remove
+    const keepTasks = tasks.filter(task => !task.complete)
+    const removeTasks = tasks.filter(task => task.complete)
+    //delete tasks marked to be removed
+    removeTasks.forEach((task) => {
+      const taskName = task.name
+      const taskObj= {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({taskName})
+      }
+      fetch('http://localhost:8020/deleteTask', taskObj)
+        .then(res => res.json)
+        .catch(err => console.log(err))
+    })
+
+    setTasks(keepTasks)
   }
 
   //set task list to empty array
